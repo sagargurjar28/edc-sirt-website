@@ -9,13 +9,26 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
+    env:
+      VERCEL_PROJECT_ID: prj_F90stRwAJeNgf55C6ddAxgYzWaoY
+      VERCEL_ORG_ID: team_FwSgIRD0JbfXVQJpOjThbFrI
+      VERCEL_OIDC_TOKEN: ${{ secrets.VERCEL_PROJECT_TOKEN }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+      - name: Install dependencies
+        working-directory: Frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: Frontend
+        run: npm run build
 
       - name: Deploy to Vercel
         working-directory: Frontend
-        run: vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}" --scope="parzival225" --yes
+        run: vercel deploy --prod --yes
