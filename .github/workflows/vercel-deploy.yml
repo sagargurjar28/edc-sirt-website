@@ -18,4 +18,4 @@ jobs:
 
       - name: Deploy to Vercel
         working-directory: Frontend
-       run: vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}" --scope="parzival225" --yes
+        run: vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}" --scope="parzival225" --yes
