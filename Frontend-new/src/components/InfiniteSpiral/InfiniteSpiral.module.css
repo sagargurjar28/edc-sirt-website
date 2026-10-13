@@ -1,0 +1,6 @@
+.stage { position: relative; min-block-size: 560px; block-size: 70vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.card {
+  position: absolute; padding: 0; overflow: hidden;
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card);
+}
+.card img { inline-size: 100%; block-size: 100%; object-fit: cover; }

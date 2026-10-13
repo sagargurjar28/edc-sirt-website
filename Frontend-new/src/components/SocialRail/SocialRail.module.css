@@ -1,0 +1,51 @@
+.rail {
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-end: var(--container-padding);
+  transform: translateY(-50%);
+  z-index: 20;
+  display: none;
+}
+
+.rail ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.link {
+  inline-size: 40px;
+  block-size: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.link svg {
+  inline-size: 20px;
+  block-size: 20px;
+  display: block;
+  fill: #ffffff;
+  transition: fill var(--duration-fast) var(--ease-out);
+}
+
+@media (min-width: 1024px) {
+  .rail { display: block; }
+}
+
+@media (hover: hover) {
+  .link:hover { border-color: var(--color-border-strong); }
+  .link[data-platform="instagram"]:hover svg { fill: url(#ig-grad-new); }
+  .link[data-platform="instagram"]:hover { color: #FD1D1D; }
+  .link[data-platform="x"]:hover svg { fill: #ffffff; }
+  .link[data-platform="linkedin"]:hover svg { fill: #0A66C2; }
+  .link[data-platform="facebook"]:hover svg { fill: #1877F2; }
+  .link[data-platform="youtube"]:hover svg { fill: #FF0000; }
+}

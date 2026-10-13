@@ -1,0 +1,81 @@
+import type { Event } from '../types';
+
+function img(seed: string, w = 800, h = 600): Event['image'] {
+  return {
+    src: `https://picsum.photos/seed/${seed}/${w}/${h}`,
+    alt: seed.replace(/-/g, ' '),
+    width: w,
+    height: h,
+    srcSet: `https://picsum.photos/seed/${seed}/${w}/${h} 1x, https://picsum.photos/seed/${seed}/${w * 2}/${h * 2} 2x`,
+    sizes: '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
+  };
+}
+
+export const events: Event[] = [
+  {
+    id: 'event-ecell-summit',
+    slug: 'ecell-summit-2026',
+    title: 'E-Cell Summit 2026',
+    summary: 'Flagship gathering with founder keynotes, student showcases, and an investor roundtable.',
+    startsAt: '2026-03-14T09:30:00.000Z',
+    location: 'SIRT Auditorium, Bhopal',
+    category: 'Summit',
+    image: img('ecell-summit'),
+    href: '/#events',
+  },
+  {
+    id: 'event-build-club',
+    slug: 'build-club-demo-day',
+    title: 'Build Club Demo Day',
+    summary: 'Five student teams demo live products built in eight weeks — with audience voting and mentor feedback.',
+    startsAt: '2026-02-08T14:00:00.000Z',
+    location: 'Innovation Lab, SIRT',
+    category: 'Demo',
+    image: img('build-club'),
+    href: '/#events',
+  },
+  {
+    id: 'event-finance-101',
+    slug: 'finance-for-founders',
+    title: 'Finance for First-Time Founders',
+    summary: 'A practical workshop on pricing, runway, and reading a P&L without an accounting degree.',
+    startsAt: '2026-02-22T10:00:00.000Z',
+    location: 'Seminar Hall 2',
+    category: 'Workshop',
+    image: img('finance-101'),
+    href: '/#events',
+  },
+  {
+    id: 'event-design-crit',
+    slug: 'design-crit-night',
+    title: 'Design Crit Night',
+    summary: 'Bring your Figma file and get direct, generous critique from designers who ship real products.',
+    startsAt: '2026-03-05T17:30:00.000Z',
+    location: 'Design Studio, SIRT',
+    category: 'Design',
+    image: img('design-crit'),
+    href: '/#events',
+  },
+  {
+    id: 'event-founder-ama',
+    slug: 'founder-ama-ama',
+    title: 'Founder AMA — From Campus to Company',
+    summary: 'An honest conversation with SIRT alumni on their first failures, hires, and customers.',
+    startsAt: '2026-03-20T18:00:00.000Z',
+    location: 'Online & Auditorium',
+    category: 'Talk',
+    image: img('founder-ama'),
+    href: '/#events',
+  },
+  {
+    id: 'event-ideathon',
+    slug: 'ideathon-spring',
+    title: 'Spring Ideathon',
+    summary: 'Form a team, frame a problem, and pitch a solution. Winners receive incubation and build credits.',
+    startsAt: '2026-04-10T09:00:00.000Z',
+    location: 'Central Atrium',
+    category: 'Hackathon',
+    image: img('ideathon-spring'),
+    href: '/#events',
+  },
+];

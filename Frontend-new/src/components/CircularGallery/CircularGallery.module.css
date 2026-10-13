@@ -1,0 +1,14 @@
+.stage { position: relative; block-size: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; perspective: 1200px; touch-action: pan-y; }
+.card {
+  position: absolute; inline-size: min(240px, 64vw);
+  background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card);
+  overflow: hidden; padding: 0; text-align: start; color: inherit;
+}
+.card img { inline-size: 100%; aspect-ratio: 3 / 4; object-fit: cover; pointer-events: none; }
+.caption { display: grid; gap: 2px; padding: var(--space-3); }
+.title { font-size: var(--text-sm); font-weight: 600; }
+.date { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-muted); }
+.selected { border-color: var(--color-border-strong); }
+.dots { display: flex; gap: var(--space-2); justify-content: center; margin-block-start: var(--space-4); }
+.dot { inline-size: 12px; block-size: 12px; border-radius: var(--radius-pill); background: var(--color-surface-raised); border: 1px solid var(--color-border); padding: 0; min-block-size: 0; }
+.active { background: var(--color-accent); border-color: transparent; }

@@ -1,0 +1,11 @@
+.banner { inline-size: 100%; max-block-size: 440px; object-fit: cover; border-radius: var(--radius-panel); border: 1px solid var(--color-border); margin-block: var(--space-4); }
+.title { font-size: var(--text-3xl); margin-block: var(--space-3) var(--space-4); }
+.meta { display: grid; gap: var(--space-3); grid-template-columns: 1fr; margin: 0 0 var(--space-5); }
+.meta dt { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-muted); }
+.meta dd { margin: var(--space-1) 0 0; }
+.description { color: var(--color-secondary); line-height: 1.65; max-inline-size: 72ch; }
+.registerTitle { margin-block: var(--space-6) var(--space-4); }
+
+@media (min-width: 640px) {
+  .meta { grid-template-columns: repeat(3, 1fr); }
+}

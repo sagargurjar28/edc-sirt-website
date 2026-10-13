@@ -1,0 +1,7 @@
+.card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; display: flex; flex-direction: column; }
+.photo { inline-size: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: var(--color-surface-raised); }
+.body { display: grid; gap: var(--space-1); padding: var(--space-4); }
+.name { font-size: var(--text-lg); }
+.role { color: var(--color-accent); font-size: var(--text-sm); }
+.department { color: var(--color-muted); font-size: var(--text-sm); }
+.email { color: var(--color-secondary); font-size: var(--text-sm); text-decoration: none; overflow-wrap: anywhere; }

@@ -1,0 +1,10 @@
+export { aboutContent } from './aboutContent';
+export { blogs, featuredBlogs } from './blogs';
+export { contacts } from './contacts';
+export { events } from './events';
+export { footerData } from './footerData';
+export { gallery } from './gallery';
+export { initiatives } from './initiatives';
+export { siteSettings, headerContent } from './siteSettings';
+export { socials } from './socials';
+export { team } from './team';

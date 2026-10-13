@@ -1,0 +1,6 @@
+.card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: var(--space-5); display: grid; gap: var(--space-3); align-content: start; }
+.category { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-accent); }
+.title { font-size: var(--text-xl); }
+.summary { color: var(--color-secondary); font-size: var(--text-base); line-height: 1.65; }
+.link { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--color-text); text-decoration: none; font-size: var(--text-sm); }
+.link:hover { color: var(--color-accent); }

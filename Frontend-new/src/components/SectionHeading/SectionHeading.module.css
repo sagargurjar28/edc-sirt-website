@@ -1,0 +1,4 @@
+.wrap { display: grid; gap: var(--space-3); margin-block-end: var(--space-6); max-inline-size: 720px; }
+.center { text-align: center; margin-inline: auto; }
+.title { font-size: var(--text-3xl); }
+.description { color: var(--color-secondary); font-size: var(--text-base); line-height: 1.65; }

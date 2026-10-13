@@ -1,0 +1,53 @@
+:root {
+  --breakpoint-current: xs;
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 640px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1440px;
+  --columns-hero: 1;
+  --columns-about: 1;
+  --columns-initiatives: 1;
+  --columns-events: 1;
+  --columns-blogs: 1;
+  --columns-gallery: 2;
+  --columns-team: 2;
+  --columns-contact: 2;
+  --columns-footer: 1;
+}
+
+@media (min-width: 480px) {
+  :root { --breakpoint-current: sm; }
+}
+
+@media (min-width: 640px) {
+  :root {
+    --breakpoint-current: md;
+    --columns-initiatives: 2;
+    --columns-events: 2;
+    --columns-blogs: 2;
+    --columns-gallery: 3;
+    --columns-team: 3;
+    --columns-contact: 3;
+    --columns-footer: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --breakpoint-current: lg;
+    --columns-hero: 2;
+    --columns-about: 2;
+    --columns-initiatives: 3;
+    --columns-events: 3;
+    --columns-blogs: 3;
+    --columns-gallery: 4;
+    --columns-team: 4;
+    --columns-contact: 4;
+    --columns-footer: 4;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root { --breakpoint-current: xl; }
+}

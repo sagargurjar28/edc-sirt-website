@@ -1,0 +1,11 @@
+.title { font-size: var(--text-3xl); margin-block: var(--space-3) var(--space-6); }
+.grid { display: grid; gap: var(--grid-gap); grid-template-columns: 1fr; margin-block: var(--space-6); }
+.card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); padding: var(--space-5); display: grid; gap: var(--space-3); }
+.card p { color: var(--color-secondary); line-height: 1.65; }
+.image { inline-size: 100%; border-radius: var(--radius-panel); border: 1px solid var(--color-border); margin-block: var(--space-6); }
+.quote { border-inline-start: 3px solid var(--color-accent); padding-inline-start: var(--space-5); display: grid; gap: var(--space-2); font-size: var(--text-xl); }
+.quote cite { color: var(--color-muted); font-size: var(--text-sm); font-style: normal; }
+
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
