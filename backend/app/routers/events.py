@@ -85,6 +85,170 @@ def public_list_events(db: Session = Depends(get_db)):
     return [event_to_out(r) for r in rows]
 
 
+def _get_published_event_or_404(db: Session, slug: str) -> models.Event:
+    row = db.execute(
+        select(models.Event).where(models.Event.slug == slug)
+    ).scalar_one_or_none()
+    if row is None or not row.published:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return row
+
+
+def field_to_out(row: models.RegistrationField) -> schemas.RegistrationFieldOut:
+    return schemas.RegistrationFieldOut(
+        id=f"field-{row.id}",
+        name=row.name,
+        label=row.label or row.name,
+        type=row.type,
+        required=row.required,
+        options=list(row.options) if row.options else None,
+        placeholder=row.placeholder or "",
+    )
+
+
+def registration_to_out(row: models.EventRegistration) -> schemas.EventRegistrationOut:
+    submitted = row.submitted_at
+    if submitted.tzinfo is None:
+        submitted = submitted.replace(tzinfo=timezone.utc)
+    return schemas.EventRegistrationOut(
+        id=f"reg-{row.id}",
+        eventId=f"event-{row.event_id}",
+        name=row.name,
+        email=row.email,
+        phone=row.phone or "",
+        college=row.college or "",
+        year=row.year or "",
+        department=row.department or "",
+        answers=dict(row.answers) if row.answers else {},
+        submittedAt=submitted.isoformat(),
+    )
+
+
+@router.get("/api/events/{slug}", response_model=schemas.EventOut)
+def public_get_event(slug: str, db: Session = Depends(get_db)):
+    return event_to_out(_get_published_event_or_404(db, slug))
+
+
+@router.get("/api/events/{slug}/registration-fields", response_model=list[schemas.RegistrationFieldOut])
+def public_list_registration_fields(slug: str, db: Session = Depends(get_db)):
+    event = _get_published_event_or_404(db, slug)
+    rows = (
+        db.execute(
+            select(models.RegistrationField)
+            .where(models.RegistrationField.event_id == event.id)
+            .order_by(models.RegistrationField.sort_order.asc(), models.RegistrationField.id.asc())
+        )
+        .scalars()
+        .all()
+    )
+    return [field_to_out(r) for r in rows]
+
+
+@router.post("/api/events/{slug}/register", status_code=status.HTTP_201_CREATED)
+def public_register_for_event(slug: str, payload: schemas.EventRegisterIn, db: Session = Depends(get_db)):
+    event = _get_published_event_or_404(db, slug)
+    row = models.EventRegistration(
+        event_id=event.id,
+        name=payload.name.strip(),
+        email=str(payload.email).strip().lower(),
+        phone=payload.phone.strip(),
+        college=payload.college.strip(),
+        year=payload.year.strip(),
+        department=payload.department.strip(),
+        answers=dict(payload.answers or {}),
+    )
+    db.add(row)
+    db.commit()
+    return {"ok": True, "message": "Registration received. See you at the event."}
+
+
+def _get_event_by_numeric_id(db: Session, event_id: str) -> models.Event:
+    try:
+        numeric = int(str(event_id).replace("event-", ""))
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Event not found")
+    row = db.get(models.Event, numeric)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return row
+
+
+@router.get("/api/admin/events/{event_id}/registrations", response_model=list[schemas.EventRegistrationOut])
+def admin_list_registrations(
+    event_id: str,
+    db: Session = Depends(get_db),
+    _admin: models.AdminUser = Depends(get_current_admin),
+):
+    event = _get_event_by_numeric_id(db, event_id)
+    rows = (
+        db.execute(
+            select(models.EventRegistration)
+            .where(models.EventRegistration.event_id == event.id)
+            .order_by(models.EventRegistration.submitted_at.desc())
+        )
+        .scalars()
+        .all()
+    )
+    return [registration_to_out(r) for r in rows]
+
+
+@router.get("/api/admin/events/{event_id}/registration-fields", response_model=list[schemas.RegistrationFieldOut])
+def admin_list_registration_fields(
+    event_id: str,
+    db: Session = Depends(get_db),
+    _admin: models.AdminUser = Depends(get_current_admin),
+):
+    event = _get_event_by_numeric_id(db, event_id)
+    rows = (
+        db.execute(
+            select(models.RegistrationField)
+            .where(models.RegistrationField.event_id == event.id)
+            .order_by(models.RegistrationField.sort_order.asc(), models.RegistrationField.id.asc())
+        )
+        .scalars()
+        .all()
+    )
+    return [field_to_out(r) for r in rows]
+
+
+@router.put("/api/admin/events/{event_id}/registration-fields", response_model=list[schemas.RegistrationFieldOut])
+def admin_save_registration_fields(
+    event_id: str,
+    payload: schemas.RegistrationFieldsPayload,
+    db: Session = Depends(get_db),
+    _admin: models.AdminUser = Depends(get_current_admin),
+):
+    event = _get_event_by_numeric_id(db, event_id)
+    existing = (
+        db.execute(
+            select(models.RegistrationField).where(models.RegistrationField.event_id == event.id)
+        )
+        .scalars()
+        .all()
+    )
+    for row in existing:
+        db.delete(row)
+    db.flush()
+    saved: list[models.RegistrationField] = []
+    for index, field in enumerate(payload.fields):
+        row = models.RegistrationField(
+            event_id=event.id,
+            name=field.name.strip(),
+            label=field.label.strip() or field.name.strip(),
+            type=field.type.strip() or "text",
+            required=field.required,
+            options=list(field.options) if field.options else None,
+            placeholder=field.placeholder.strip(),
+            sort_order=index,
+        )
+        db.add(row)
+        saved.append(row)
+    db.commit()
+    for row in saved:
+        db.refresh(row)
+    return [field_to_out(r) for r in saved]
+
+
 @router.get("/api/admin/events", response_model=list[schemas.EventOut])
 def admin_list_events(
     db: Session = Depends(get_db),

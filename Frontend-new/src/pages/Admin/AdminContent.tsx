@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import ImageUploadField from '../../components/Admin/ImageUploadField';
 import { getSectionContentAdmin, listSubmissions, saveSectionContentAdmin } from '../../services/adminApi';
 import type { ContactSubmission, SectionContentMap } from '../../types';
 import styles from './Admin.module.css';
@@ -59,16 +60,25 @@ export default function AdminContent() {
         ))}
       </div>
       <form onSubmit={save} className={styles.form} aria-label={`Edit ${section} content`}>
-        {Object.entries(draft).map(([k, v]) => (
-          <label key={k}>
-            {k}
-            {v.length > 120 ? (
-              <textarea rows={4} value={v} onChange={(e) => setDraft((d) => ({ ...d, [k]: e.target.value }))} />
-            ) : (
-              <input value={v} onChange={(e) => setDraft((d) => ({ ...d, [k]: e.target.value }))} />
-            )}
-          </label>
-        ))}
+        {Object.entries(draft).map(([k, v]) =>
+          /image|poster|background|photo/i.test(k) && !/_alt$/i.test(k) ? (
+            <ImageUploadField
+              key={k}
+              label={k}
+              value={v}
+              onChange={(url) => setDraft((d) => ({ ...d, [k]: url }))}
+            />
+          ) : (
+            <label key={k}>
+              {k}
+              {v.length > 120 ? (
+                <textarea rows={4} value={v} onChange={(e) => setDraft((d) => ({ ...d, [k]: e.target.value }))} />
+              ) : (
+                <input value={v} onChange={(e) => setDraft((d) => ({ ...d, [k]: e.target.value }))} />
+              )}
+            </label>
+          ),
+        )}
         {!Object.keys(draft).length ? <p>No saved values yet for this section — enter values to create them.</p> : null}
         <button type="submit" className={styles.primary}>Save {section}</button>
       </form>

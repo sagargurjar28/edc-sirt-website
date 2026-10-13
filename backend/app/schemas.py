@@ -82,3 +82,75 @@ class AdminMe(BaseModel):
     id: int
     email: str
     name: str
+
+
+class StudentRegister(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
+
+
+class StudentLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class StudentOut(BaseModel):
+    id: str
+    name: str
+    email: str
+
+
+class StudentAuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    student: StudentOut
+
+
+class RegistrationFieldIn(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(min_length=1, max_length=255)
+    label: str = ""
+    type: str = "text"
+    required: bool = False
+    options: list[str] | None = None
+    placeholder: str = ""
+
+
+class RegistrationFieldOut(RegistrationFieldIn):
+    id: str
+
+
+class RegistrationFieldsPayload(BaseModel):
+    fields: list[RegistrationFieldIn] = []
+
+
+class EventRegisterIn(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    name: str = Field(min_length=1, max_length=255)
+    email: EmailStr
+    phone: str = ""
+    college: str = ""
+    year: str = ""
+    department: str = ""
+    answers: dict[str, str] = {}
+
+
+class EventRegistrationOut(BaseModel):
+    id: str
+    eventId: str
+    name: str
+    email: str
+    phone: str = ""
+    college: str = ""
+    year: str = ""
+    department: str = ""
+    answers: dict[str, str] = {}
+    submittedAt: str
+
+
+class ImageUploadOut(BaseModel):
+    id: int
+    url: str

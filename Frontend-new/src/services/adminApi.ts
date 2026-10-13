@@ -164,3 +164,19 @@ export function registrationsToCsv(rows: EventRegistration[]): string {
   );
   return [header.join(','), ...lines].join('\n');
 }
+
+export async function uploadImage(file: File | Blob): Promise<{ id: number; url: string }> {
+  const token = getToken();
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${API_URL}/api/admin/uploads`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+  if (res.status === 401) { clearToken(); throw new AuthError('Session expired'); }
+  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+  const data = (await res.json()) as { id: number; url: string };
+  // Return an absolute URL so the value stored in image_url is directly usable
+  return { id: data.id, url: `${API_URL}${data.url}` };
+}

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import DateTimeField from '../../components/Admin/DateTimeField';
+import ImageUploadField from '../../components/Admin/ImageUploadField';
 import { createBlog, deleteBlog, listBlogs, updateBlog } from '../../services/adminApi';
 import type { Blog } from '../../types';
 import styles from './Admin.module.css';
@@ -77,10 +79,10 @@ export default function AdminBlogs() {
           ))}
           <div className={styles.row}>
             <label>reading_minutes<input type="number" value={Number(form.reading_minutes)} onChange={(e) => set('reading_minutes', Number(e.target.value))} /></label>
-            <label>published_at<input value={String(form.published_at)} onChange={(e) => set('published_at', e.target.value)} placeholder="2026-01-01T00:00:00Z" /></label>
+            <DateTimeField label="Published at" value={String(form.published_at)} onChange={(iso) => set('published_at', iso)} />
           </div>
+          <ImageUploadField label="Blog image" value={String(form.image_url)} onChange={(url) => set('image_url', url)} />
           <div className={styles.row}>
-            <label>image_url<input value={String(form.image_url)} onChange={(e) => set('image_url', e.target.value)} /></label>
             <label>image_alt<input value={String(form.image_alt)} onChange={(e) => set('image_alt', e.target.value)} /></label>
           </div>
           <label>content<textarea rows={8} value={String(form.content)} onChange={(e) => set('content', e.target.value)} /></label>

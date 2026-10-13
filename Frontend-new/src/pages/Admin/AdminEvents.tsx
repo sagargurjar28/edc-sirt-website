@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import DateTimeField from '../../components/Admin/DateTimeField';
+import ImageUploadField from '../../components/Admin/ImageUploadField';
 import { createEvent, deleteEvent, listEvents, updateEvent } from '../../services/adminApi';
 import type { EventItem } from '../../types';
 import styles from './Admin.module.css';
@@ -70,9 +72,11 @@ export default function AdminEvents() {
       {error ? <p role="alert" className={styles.error}>{error}</p> : null}
       {showNew ? (
         <form onSubmit={save} className={styles.form} aria-label={editing ? 'Edit event' : 'New event'}>
-          {(['title', 'slug', 'summary', 'category', 'location', 'starts_at', 'image_url', 'image_alt'] as const).map((k) => (
+          {(['title', 'slug', 'summary', 'category', 'location', 'image_alt'] as const).map((k) => (
             <label key={k}>{k}<input value={String(form[k])} onChange={(e) => set(k, e.target.value)} required={k === 'title' || k === 'slug'} /></label>
           ))}
+          <DateTimeField label="Event starts" value={String(form.starts_at)} onChange={(iso) => set('starts_at', iso)} />
+          <ImageUploadField label="Event poster" value={String(form.image_url)} onChange={(url) => set('image_url', url)} />
           <div className={styles.row}>
             <label className={styles.check}><input type="checkbox" checked={Boolean(form.published)} onChange={(e) => set('published', e.target.checked)} /> published</label>
             <label className={styles.check}><input type="checkbox" checked={Boolean(form.registration_open)} onChange={(e) => set('registration_open', e.target.checked)} /> registration_open</label>

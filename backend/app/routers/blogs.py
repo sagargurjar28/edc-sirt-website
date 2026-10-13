@@ -89,6 +89,16 @@ def public_list_blogs(db: Session = Depends(get_db)):
     return [blog_to_out(r) for r in rows]
 
 
+@router.get("/api/blogs/{slug}", response_model=schemas.BlogOut)
+def public_get_blog(slug: str, db: Session = Depends(get_db)):
+    row = db.execute(
+        select(models.Blog).where(models.Blog.slug == slug)
+    ).scalar_one_or_none()
+    if row is None or not row.published:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return blog_to_out(row)
+
+
 @router.get("/api/admin/blogs", response_model=list[schemas.BlogOut])
 def admin_list_blogs(
     db: Session = Depends(get_db),

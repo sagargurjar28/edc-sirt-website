@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, LargeBinary, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .database import Base
@@ -65,4 +65,75 @@ class Event(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=_now)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_now, onupdate=_now
+    )
+
+
+class Student(Base):
+    """Student accounts for the public site. New table — existing tables untouched."""
+
+    __tablename__ = "students"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_now
+    )
+
+
+class RegistrationField(Base):
+    """Dynamic per-event registration fields. New table — existing tables untouched."""
+
+    __tablename__ = "registration_fields"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    event_id: Mapped[int] = mapped_column(
+        ForeignKey("events.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    label: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    type: Mapped[str] = mapped_column(String(50), nullable=False, default="text")
+    required: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    options: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    placeholder: Mapped[str] = mapped_column(String(500), nullable=False, default="")
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+
+class EventRegistration(Base):
+    """Rows submitted via POST /api/events/{slug}/register. New table."""
+
+    __tablename__ = "event_registrations"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    event_id: Mapped[int] = mapped_column(
+        ForeignKey("events.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    name: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    email: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    phone: Mapped[str] = mapped_column(String(50), nullable=False, default="")
+    college: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    year: Mapped[str] = mapped_column(String(50), nullable=False, default="")
+    department: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    answers: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    submitted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_now
+    )
+
+
+class ImageUpload(Base):
+    """Binary image store for admin uploads. New table — existing tables untouched."""
+
+    __tablename__ = "image_uploads"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    mime_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
+    data: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
+    uploaded_by: Mapped[int | None] = mapped_column(
+        ForeignKey("admin_users.id"), nullable=True
+    )
+    uploaded_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_now
     )
