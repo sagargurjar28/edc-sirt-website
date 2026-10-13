@@ -23,6 +23,11 @@
 .visual :global(.edc3d) { inline-size: min(420px, 100%); block-size: 420px; }
 .visual :global(.edc3d-fallback) { display: flex; justify-content: center; }
 
+.gearLayer { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; will-change: transform, opacity; }
+.logoRotating { inline-size: min(70vmin, 640px); block-size: auto; animation: edc-rotate 40s linear infinite; filter: drop-shadow(0 0 40px rgb(230 57 70 / 12%)); }
+@keyframes edc-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .logoRotating { animation: none; } }
+
 @media (min-width: 1024px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
 }

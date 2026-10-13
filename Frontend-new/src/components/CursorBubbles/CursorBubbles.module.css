@@ -1,0 +1,16 @@
+.layer { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.bubble {
+  position: absolute;
+  border-radius: 999px;
+  background: var(--color-accent);
+  opacity: 0.55;
+  transform: translate(-50%, -50%);
+  animation: cursor-bubble-rise 800ms ease-out forwards;
+}
+@keyframes cursor-bubble-rise {
+  from { transform: translate(-50%, -50%) scale(1); opacity: 0.55; }
+  to { transform: translate(-50%, calc(-50% - 40px)) scale(0.4); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bubble { animation: none; }
+}

@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Footer from './components/Footer/Footer';
 import Header from './components/Header/Header';
+import CursorBubbles from './components/CursorBubbles/CursorBubbles';
 import SocialRail from './components/SocialRail/SocialRail';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useContent } from './hooks/useContent';
@@ -16,6 +17,8 @@ import BlogDetail from './pages/BlogDetail';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Team from './pages/Team';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import AdminLogin from './pages/Admin/AdminLogin';
 import AdminLayout from './pages/Admin/AdminLayout';
 import AdminBlogs from './pages/Admin/AdminBlogs';
@@ -39,6 +42,8 @@ export default function App() {
       '/gallery': 'Gallery',
       '/contact': 'Contact',
       '/team': 'Team',
+      '/login': 'Login',
+      '/register': 'Register',
       '/admin/login': 'Admin Login',
     };
     document.title = `${names[pathname] ?? 'Page'} | EDC SIRT`;
@@ -65,6 +70,7 @@ export default function App() {
       <a className="skip-link" href="#main-content">Skip to content</a>
       {header && <Header key={pathname} content={header} />}
       {socials && pathname === '/' && <SocialRail links={socials} />}
+      <CursorBubbles />
       <main id="main-content" tabIndex={-1}>
         {error && (
           <div className="container section" role="alert">
@@ -83,6 +89,8 @@ export default function App() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/team" element={<Team />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="/admin/blogs" replace />} />

@@ -23,6 +23,7 @@ import type {
   SectionContentMap,
   SiteSettings,
   SocialLink,
+  StudentAuthResponse,
   TeamMember,
 } from '../types';
 
@@ -269,3 +270,69 @@ export async function submitContact(payload: { name: string; email: string; mess
 }
 
 export type { EventRegistration, ContactSubmission };
+
+export const STUDENT_TOKEN_KEY = 'edc_student_token';
+
+export function getStudentToken(): string | null {
+  return localStorage.getItem(STUDENT_TOKEN_KEY);
+}
+
+export function setStudentToken(token: string): void {
+  localStorage.setItem(STUDENT_TOKEN_KEY, token);
+}
+
+export function clearStudentToken(): void {
+  localStorage.removeItem(STUDENT_TOKEN_KEY);
+}
+
+async function postAuth(
+  path: '/api/auth/login' | '/api/auth/register',
+  payload: Record<string, string>,
+): Promise<StudentAuthResponse> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    let detail = `Request failed: ${res.status}`;
+    try {
+      const body = (await res.json()) as { detail?: string; message?: string };
+      if (body.detail) detail = body.detail;
+      else if (body.message) detail = body.message;
+    } catch {
+      /* keep default */
+    }
+    throw new Error(detail);
+  }
+  const data = (await res.json()) as StudentAuthResponse;
+  setStudentToken(data.access_token);
+  return data;
+}
+
+export function loginStudent(email: string, password: string): Promise<StudentAuthResponse> {
+  return postAuth('/api/auth/login', { email, password });
+}
+
+export function registerStudent(name: string, email: string, password: string): Promise<StudentAuthResponse> {
+  return postAuth('/api/auth/register', { name, email, password });
+}
+
+export async function getStudentMe(): Promise<StudentAuthResponse['student']> {
+  const token = getStudentToken();
+  const res = await fetch(`${API_URL}/api/auth/me`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) {
+    if (res.status === 401) clearStudentToken();
+    let detail = `Request failed: ${res.status}`;
+    try {
+      const body = (await res.json()) as { detail?: string };
+      if (body.detail) detail = body.detail;
+    } catch {
+      /* keep default */
+    }
+    throw new Error(detail);
+  }
+  return (await res.json()) as StudentAuthResponse['student'];
+}

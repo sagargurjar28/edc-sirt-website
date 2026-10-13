@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import EDCHero3D from '../3d/EDCHero3D';
 import styles from './Hero.module.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -62,7 +61,9 @@ export default function Hero({ eyebrow, title, description, primaryLink, seconda
           </div>
         </div>
         <div className={styles.visual} ref={visualRef}>
-          <EDCHero3D />
+          <div className={styles.gearLayer} aria-hidden="true">
+            <img src="/edc-logo.svg" alt="" className={styles.logoRotating} />
+          </div>
         </div>
       </div>
     </section>

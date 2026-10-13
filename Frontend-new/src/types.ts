@@ -165,3 +165,15 @@ export interface ContactSubmission {
   message: string;
   submittedAt: string;
 }
+
+export interface Student {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface StudentAuthResponse {
+  access_token: string;
+  token_type: string;
+  student: Student;
+}
