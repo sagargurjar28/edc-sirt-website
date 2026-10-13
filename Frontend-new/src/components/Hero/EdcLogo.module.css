@@ -1,12 +1,14 @@
-.gear {
+.rotatingGear {
   transform-box: view-box;
   transform-origin: 136.6px 179px;
-  animation: edc-gear-rotate 40s linear infinite;
+  animation: edc-gear-spin 40s linear infinite;
 }
-@keyframes edc-gear-rotate {
+
+@keyframes edc-gear-spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .gear { animation: none; }
+  .rotatingGear { animation: none; }
 }

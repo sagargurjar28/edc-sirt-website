@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: Props) {
       <div className={styles.split}>
         <div className={styles.visual} aria-hidden="true">
           <div className={styles.glow} />
-          <img src="/edc-logo.svg" alt="" className={styles.logoRotating} />
+          <img src="/edc-logo.svg" alt="" className={styles.authLogo} />
         </div>
         <div className={styles.panel}>{children}</div>
       </div>

@@ -17,9 +17,7 @@
   background: radial-gradient(120% 120% at 20% 0%, rgb(230 57 70 / 14%), transparent 60%);
   pointer-events: none;
 }
-.logoRotating { inline-size: min(48vmin, 320px); block-size: auto; animation: auth-rotate 60s linear infinite; }
-@keyframes auth-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .logoRotating { animation: none; } }
+.authLogo { inline-size: min(40vmin, 360px); block-size: auto; }
 .panel { display: grid; place-items: center; }
 .card {
   inline-size: 100%;
@@ -51,5 +49,4 @@
 @media (min-width: 1024px) {
   .split { grid-template-columns: repeat(2, 1fr); }
   .visual { block-size: auto; min-block-size: 100%; border-radius: var(--radius-panel); }
-  .logoRotating { inline-size: min(40vmin, 420px); }
 }

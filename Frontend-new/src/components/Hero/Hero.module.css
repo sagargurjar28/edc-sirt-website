@@ -27,7 +27,6 @@
   position: absolute; inset: 0;
   display: grid; place-items: center;
   pointer-events: none;
-  will-change: transform, opacity;
 }
 .gearLayer svg {
   inline-size: min(70vmin, 640px);
