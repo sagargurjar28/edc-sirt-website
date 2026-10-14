@@ -36,6 +36,8 @@ class Blog(Base):
     published: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     image_url: Mapped[str] = mapped_column(Text, nullable=False, default="")
     image_alt: Mapped[str] = mapped_column(String(500), nullable=False, default="")
+    content: Mapped[str | None] = mapped_column(Text, nullable=True, default=None)
+    linkedin_url: Mapped[str | None] = mapped_column(String(500), nullable=True, default=None)
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=_now)
     created_by: Mapped[int | None] = mapped_column(
         ForeignKey("admin_users.id"), nullable=True

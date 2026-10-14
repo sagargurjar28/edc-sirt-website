@@ -24,6 +24,8 @@ class BlogOut(BaseModel):
     featured: bool = False
     image: ContentImage
     href: str = "/blogs"
+    content: str | None = None
+    linkedin_url: str | None = None
 
 
 class EventOut(BaseModel):
@@ -52,6 +54,8 @@ class BlogIn(BaseModel):
     image_url: str = ""
     image_alt: str = ""
     published: bool = True
+    content: str | None = None
+    linkedin_url: str | None = None
 
 
 class EventIn(BaseModel):

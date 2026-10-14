@@ -7,6 +7,12 @@ from .routers import auth, blogs, events, students, uploads
 
 Base.metadata.create_all(bind=engine)
 
+from sqlalchemy import text
+
+with engine.begin() as conn:
+    conn.execute(text("ALTER TABLE blogs ADD COLUMN IF NOT EXISTS content TEXT"))
+    conn.execute(text("ALTER TABLE blogs ADD COLUMN IF NOT EXISTS linkedin_url VARCHAR(500)"))
+
 app = FastAPI(title="EDC SIRT API", version="0.1.0")
 
 app.add_middleware(

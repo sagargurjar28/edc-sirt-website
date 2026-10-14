@@ -55,6 +55,8 @@ def blog_to_out(row: models.Blog) -> schemas.BlogOut:
             sizes="(min-width: 1024px) 33vw, 100vw",
         ),
         href="/blogs",
+        content=row.content or None,
+        linkedin_url=row.linkedin_url or None,
     )
 
 
@@ -68,6 +70,8 @@ def apply_blog_in(row: models.Blog, payload: schemas.BlogIn) -> None:
     row.published = payload.published
     row.image_url = payload.image_url or ""
     row.image_alt = payload.image_alt or ""
+    row.content = payload.content or None
+    row.linkedin_url = payload.linkedin_url or None
     if payload.published_at is not None:
         dt = payload.published_at
         if dt.tzinfo is None:
