@@ -44,7 +44,7 @@ class BlogIn(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     title: str = Field(min_length=1)
-    slug: str = ""
+    slug: str | None = None
     excerpt: str = ""
     author: str = ""
     category: str = ""

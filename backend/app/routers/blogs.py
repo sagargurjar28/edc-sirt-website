@@ -1,4 +1,3 @@
-import re
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -8,26 +7,16 @@ from sqlalchemy.orm import Session
 from .. import models, schemas
 from ..auth import get_current_admin
 from ..database import get_db
+from ..utils import slugify, unique_slug
 
 router = APIRouter(tags=["blogs"])
 
 
-def slugify(text: str) -> str:
-    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
-    return slug or "post"
-
-
-def unique_slug(db: Session, base: str, exclude_id: int | None = None) -> str:
-    candidate = base
-    n = 1
-    while True:
-        q = select(models.Blog).where(models.Blog.slug == candidate)
-        if exclude_id is not None:
-            q = q.where(models.Blog.id != exclude_id)
-        if db.execute(q).scalar_one_or_none() is None:
-            return candidate
-        n += 1
-        candidate = f"{base}-{n}"
+def _existing_slugs(db: Session, exclude_id: int | None = None) -> set[str]:
+    q = select(models.Blog.slug)
+    if exclude_id is not None:
+        q = q.where(models.Blog.id != exclude_id)
+    return set(db.execute(q).scalars().all())
 
 
 def blog_to_out(row: models.Blog) -> schemas.BlogOut:
@@ -124,9 +113,10 @@ def admin_create_blog(
     db: Session = Depends(get_db),
     admin: models.AdminUser = Depends(get_current_admin),
 ):
-    base = payload.slug.strip() or slugify(payload.title)
+    # Slug is always auto-generated from the title; any incoming slug is ignored.
+    base = slugify(payload.title)
     row = models.Blog(
-        slug=unique_slug(db, base),
+        slug=unique_slug(base, _existing_slugs(db)),
         published_at=datetime.now(timezone.utc),
         created_by=admin.id,
     )
@@ -147,9 +137,11 @@ def admin_update_blog(
     row = db.get(models.Blog, blog_id)
     if row is None:
         raise HTTPException(status_code=404, detail="Blog not found")
-    base = payload.slug.strip() or row.slug
-    if base != row.slug:
-        row.slug = unique_slug(db, base, exclude_id=row.id)
+    # Regenerate slug only when the title changed; otherwise keep the
+    # existing slug so URLs stay stable. Any incoming slug is ignored.
+    if payload.title != row.title:
+        base = slugify(payload.title)
+        row.slug = unique_slug(base, _existing_slugs(db, exclude_id=row.id))
     apply_blog_in(row, payload)
     db.commit()
     db.refresh(row)
